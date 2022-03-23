@@ -12,9 +12,10 @@ type PagePropsType = {
 const Posts: NextPage<PagePropsType> = ( { post }: PagePropsType ) => {
     return (
         <>
-            <h1>{post.title}</h1>
+            <h1>{post.id} : {post.title}</h1>
             <div>
                 <p>{post.body}</p>
+                <p><a href="/posts/">back Posts Top</a></p>
             </div>
         </>
     )
