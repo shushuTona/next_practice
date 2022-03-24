@@ -1,15 +1,16 @@
-import type { NextPage } from 'next';
+import type { NextPage, GetStaticProps, GetStaticPaths } from 'next';
+import { ParsedUrlQuery } from 'node:querystring'
 
-type PostItem = {
+interface PostItem {
     id: string
     body: string
     title: string
 }
-type PagePropsType = {
+interface PagePropsType {
     post: PostItem
 }
 
-const Posts: NextPage<PagePropsType> = ( { post }: PagePropsType ) => {
+const Posts: NextPage<PagePropsType> = ( { post } ) => {
     return (
         <>
             <h1>{post.id} : {post.title}</h1>
@@ -21,12 +22,17 @@ const Posts: NextPage<PagePropsType> = ( { post }: PagePropsType ) => {
     )
 }
 
-type GetStaticPropsType = {
-    params: PostItem
+// getStaticPropsの戻り値になるpropsの型を定義
+interface Props {
+    post: PostItem
+}
+// getStaticPathsで作成したparamsの型を定義
+interface Params extends ParsedUrlQuery {
+    id: string
 }
 
-export async function getStaticProps( { params }: GetStaticPropsType ) {
-    const res = await fetch( `https://jsonplaceholder.typicode.com/posts/${params.id}` );
+export const getStaticProps: GetStaticProps<Props, Params> = async ( { params } ) => {
+    const res = await fetch( `https://jsonplaceholder.typicode.com/posts/${params!.id}` );
     const post: PostItem = await res.json();
 
     return {
@@ -36,14 +42,12 @@ export async function getStaticProps( { params }: GetStaticPropsType ) {
     }
 }
 
-type PathsItem = {
-    params: {
-        id: string
-    }
+interface PathsItem {
+    params: Params
 }
 type PathsType = PathsItem[];
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths<Params>  = async () => {
     const res = await fetch( 'https://jsonplaceholder.typicode.com/posts' );
     const posts = await res.json();
 

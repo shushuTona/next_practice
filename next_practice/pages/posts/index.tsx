@@ -1,16 +1,16 @@
-import type { NextPage } from 'next'
+import type { NextPage, GetStaticProps } from 'next';
+import { ParsedUrlQuery } from 'node:querystring'
 
-type PostItem = {
+interface PostItem {
     id: string
     body: string
     title: string
 }
-
-type PagePropsType = {
+interface Props {
     posts: PostItem[]
 }
 
-const PostsIndex: NextPage<PagePropsType> = ( { posts }: PagePropsType ) => {
+const PostsIndex: NextPage<Props> = ( { posts } ) => {
     return (
         <ul>
             {
@@ -28,7 +28,7 @@ const PostsIndex: NextPage<PagePropsType> = ( { posts }: PagePropsType ) => {
     )
 }
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps<Props> = async () => {
     const res = await fetch( 'https://jsonplaceholder.typicode.com/posts/' );
     const posts: PostItem[] = await res.json();
 
